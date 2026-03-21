@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    password:
+    username:
+    url: jdbc:mysql://localhost:3306/苍穹外卖后端?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    type: com.zaxxer.hikari.HikariDataSource
+  servlet:
+    multipart:
+      max-file-size: 10MB  # 限制单个文件大小
+      max-request-size: 100MB  # 限制请求总文件大小
+
+mybatis:
+  type-aliases-package:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
+
+
+
+aliyun:
+  oss:
