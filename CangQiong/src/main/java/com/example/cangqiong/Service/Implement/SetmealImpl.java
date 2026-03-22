@@ -239,18 +239,26 @@ public class SetmealImpl implements SetmealService {
         }
     }
 
-    //删除setmeal_dish
+    //删除餐品
     private void deleteSetmealDish(long setmealId) {
-        if (!CheckIsValidUtil.isValid(setmealId)) {
-            log.warn(SetmealConstant.DELETE_SETMEAL_DISH_PARAM_ERROR);
-            throw new BusinessException(SetmealConstant.DELETE_SETMEAL_DISH_PARAM_ERROR
-                    , SetmealConstant.CODE_FRONT);
-        }
+        validDeleteSetmealDishParam(setmealId);
+        deleteSetmealDishDo(setmealId);
+    }
+
+    private void deleteSetmealDishDo(long setmealId) {
         Integer row = setmealMapper.deleteSetmealDish(setmealId);
         if (row < 1) {
             log.warn(SetmealConstant.DELETE_SETMEAL_DISH_RESULT_ERROR);
             throw new BusinessException(SetmealConstant.DELETE_SETMEAL_DISH_RESULT_ERROR
                     , SetmealConstant.CODE_BEHIND);
+        }
+    }
+
+    private void validDeleteSetmealDishParam(long setmealId) {
+        if (!CheckIsValidUtil.isValid(setmealId)) {
+            log.warn(SetmealConstant.DELETE_SETMEAL_DISH_PARAM_ERROR);
+            throw new BusinessException(SetmealConstant.DELETE_SETMEAL_DISH_PARAM_ERROR
+                    , SetmealConstant.CODE_FRONT);
         }
     }
 

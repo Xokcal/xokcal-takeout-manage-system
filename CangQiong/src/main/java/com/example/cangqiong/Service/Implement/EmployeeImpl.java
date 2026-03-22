@@ -167,7 +167,8 @@ public class EmployeeImpl implements EmployeeService {
 
     //修改密码，校验参数
     private static void updatePasswordValidParam(Integer id, UpdatePasswordRquestBody updatePasswordRquestBody) {
-        if (!CheckIsValidUtil.isValid(updatePasswordRquestBody) || !CheckIsValidUtil.isValid(id)) {
+        if (!CheckIsValidUtil.isValid(updatePasswordRquestBody)
+                || !CheckIsValidUtil.isValid(id)) {
             log.warn(EmployeeConstant.UPDATE_PASSWORD_PARAM_ERROR);
             throw new BusinessException(EmployeeConstant.UPDATE_PASSWORD_PARAM_ERROR
                     , EmployeeConstant.CODE_FRONT);

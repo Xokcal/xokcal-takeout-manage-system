@@ -1,4 +1,4 @@
-package com.example.cangqiong.Pojo.Setmeal;
+package com.example.cangqiong.Pojo.Order;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PageSetmealRequetBody {
-    private Integer categoryId;
-    private String name;
+public class OrderPageRequestBody {
+    private String beginTime;
+    private String endTime;
+    private String number;
     private Integer page;
     private Integer pageSize;
+    private String phone;
     private Integer status;
 }

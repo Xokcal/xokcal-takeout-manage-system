@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.cangqiong.Mapper.OrderMapper">
+    <select id="pageOrder" resultType="com.example.cangqiong.Pojo.Order.OrderBody">
+        select * from orders
+        <where>
+            <!-- 时间范围：开始时间 -->
+            <if test="p.beginTime != null and p.beginTime != ''">
+                and order_time &gt;= #{p.beginTime}
+            </if>
+            <!-- 时间范围：结束时间 -->
+            <if test="p.endTime != null and p.endTime != ''">
+                and order_time &lt;= #{p.endTime}
+            </if>
+            <!-- 订单号模糊查询 -->
+            <if test="p.number != null and p.number != ''">
+                and number like concat('%', #{p.number}, '%')
+            </if>
+            <!-- 手机号模糊查询 -->
+            <if test="p.phone != null and p.phone != ''">
+                and phone like concat('%', #{p.phone}, '%')
+            </if>
+            <!-- 订单状态精确查询 -->
+            <if test="p.status != null">
+                and status = #{p.status}
+            </if>
+        </where>
+        <!-- 按下单时间倒序（最新订单在前） -->
+        order by order_time desc
+        limit #{start} , #{p.pageSize}
+    </select>
+</mapper>

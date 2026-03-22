@@ -37,6 +37,15 @@ public class R<T> {
     }
 
     //是否通过
+    public R ok(Integer i , Object o){
+        R r = new R();
+        r.setCode(1);
+        r.setData(i);
+        r.setMsg("成功！！");
+        return r;
+    }
+
+    //是否通过
     public R ok(Integer i , String s){
         R r = new R();
         r.setCode(i);
