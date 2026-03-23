@@ -147,7 +147,7 @@ public class OrderImpl implements OrderService {
             throw new BusinessException(OrderConstant.STATISTICS_PARAM_ERROR
                     , OrderConstant.CODE_BEHIND);
         }
-        OrderStatisticsBody orderStatisticsBody = new OrderStatisticsBody(0, 0, 0, 0);
+        OrderStatisticsBody orderStatisticsBody = new OrderStatisticsBody();
         for (Map<Object, Object> map : orderStatisticsMap) {
             String statisticsCode = map.get("statistic").toString();
             Integer sum = Integer.valueOf(String.valueOf(map.get("sum")));

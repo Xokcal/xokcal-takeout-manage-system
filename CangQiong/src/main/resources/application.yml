@@ -1,6 +1,6 @@
 spring:
   datasource:
-    password:
+    password: 
     username:
     url: jdbc:mysql://localhost:3306/苍穹外卖后端?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     type: com.zaxxer.hikari.HikariDataSource

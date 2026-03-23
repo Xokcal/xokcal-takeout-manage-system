@@ -20,30 +20,19 @@ public class CommonImpl implements CommonService {
     //文件上传
     @Override
     public String uploadFile(MultipartFile file){
-        validUploadFileParam(file);
-        String r = uploadFileDo(file);
-        log.info(CommonConstant.FILE_UPLOAD_RESULT_RIGHT , r);
-        return r;
-    }
-
-    //文件上传：执行
-    private String uploadFileDo(MultipartFile file) {
+        if (!CheckIsValidUtil.isValid(file)){
+            log.warn(CommonConstant.FILE_UPLOAD_PARAM_ERROR);
+            throw new BusinessException(CommonConstant.FILE_UPLOAD_PARAM_ERROR
+                    , CommonConstant.CODE_FRONT);
+        }
         String r = oss.uploadFile(file);
         if (!CheckIsValidUtil.isValid(r)){
             log.warn(CommonConstant.FILE_UPLOAD_RESULT_ERROR);
             throw new BusinessException(CommonConstant.FILE_UPLOAD_RESULT_ERROR
                     ,CommonConstant.CODE_BEHIND);
         }
+        log.info(CommonConstant.FILE_UPLOAD_RESULT_RIGHT , r);
         return r;
-    }
-
-    //文件上传：校验参数
-    private void validUploadFileParam(MultipartFile file) {
-        if (!CheckIsValidUtil.isValid(file)){
-            log.warn(CommonConstant.FILE_UPLOAD_PARAM_ERROR);
-            throw new BusinessException(CommonConstant.FILE_UPLOAD_PARAM_ERROR
-                    , CommonConstant.CODE_FRONT);
-        }
     }
 
 

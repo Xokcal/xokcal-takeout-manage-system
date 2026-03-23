@@ -24,13 +24,11 @@ public class SetmealImpl implements SetmealService {
     //分页查询套餐
     @Override
     public SetmealPageResonseBody pageSetmeal(PageSetmealRequetBody pageSetmealRequetBody) {
-        validPageSetmealParam(pageSetmealRequetBody);
-        List<SetmealAndDishBody> setmealBodies = pageSetmealDo(pageSetmealRequetBody);
-        return new SetmealPageResonseBody(getSetmealTotal(), setmealBodies);
-    }
-
-    //分页查询套餐：执行
-    private List<SetmealAndDishBody> pageSetmealDo(PageSetmealRequetBody pageSetmealRequetBody) {
+        if (!CheckIsValidUtil.isValid(pageSetmealRequetBody)) {
+            log.warn(SetmealConstant.SETMEAL_SELECT_PARAM_ERROR);
+            throw new BusinessException(SetmealConstant.SETMEAL_SELECT_PARAM_ERROR
+                    , SetmealConstant.CODE_FRONT);
+        }
         Integer start = SetmealConstant.startPage(pageSetmealRequetBody.getPage(), pageSetmealRequetBody.getPageSize());
         List<SetmealAndDishBody> setmealBodies = setmealMapper.selectSetmealPage(pageSetmealRequetBody , start);
         if (!CheckIsValidUtil.isValid(setmealBodies)) {
@@ -38,96 +36,50 @@ public class SetmealImpl implements SetmealService {
             throw new BusinessException(SetmealConstant.SETMEAL_SELECT_RESULT_ERROR
                     , SetmealConstant.CODE_BEHIND);
         }
-        return setmealBodies;
-    }
-
-    //分页查询套餐：校验参数
-    private static void validPageSetmealParam(PageSetmealRequetBody pageSetmealRequetBody) {
-        if (!CheckIsValidUtil.isValid(pageSetmealRequetBody)) {
-            log.warn(SetmealConstant.SETMEAL_SELECT_PARAM_ERROR);
-            throw new BusinessException(SetmealConstant.SETMEAL_SELECT_PARAM_ERROR
-                    , SetmealConstant.CODE_FRONT);
-        }
+        return new SetmealPageResonseBody(getSetmealTotal(), setmealBodies);
     }
 
     //新增套餐
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer addSetmeal(SetmealAndDishBody setmealAndDishBody) {
-        validAddSetmealParam(setmealAndDishBody);
-        Integer row1 = insertSetmealDo(setmealAndDishBody);
-        List<SetmealDishBody> setmealDishBodies = fillKeyToSetmealAndDishBody(setmealAndDishBody);
-        Integer row2 = insertSetmealDishDo(setmealDishBodies);
-        validAddSetmealResult(row1, row2);
-        return SetmealConstant.ADD_SETMEAL_PASS_RESULT;
-    }
-
-    //新增套餐：执行插入套餐餐品
-    private Integer insertSetmealDishDo(List<SetmealDishBody> setmealDishBodies) {
-        Integer row2 = setmealMapper.insertSetmealDish(setmealDishBodies);
-        return row2;
-    }
-
-    //新增套餐：
-    private List<SetmealDishBody> fillKeyToSetmealAndDishBody(SetmealAndDishBody setmealAndDishBody) {
-        List<SetmealDishBody> setmealDishBodies = batchKeyValueToSetmealDishBody(
-                setmealAndDishBody.getId(), setmealAndDishBody.getSetmealDishes());
-        return setmealDishBodies;
-    }
-
-    //新增套餐：执行
-    private Integer insertSetmealDo(SetmealAndDishBody setmealAndDishBody) {
-        Integer row1 = setmealMapper.insertSetmeal(setmealAndDishBody);
-        return row1;
-    }
-
-    //新增套餐：校验结果
-    private static void validAddSetmealResult(Integer row1, Integer row2) {
-        if (row1 < 1 || row2 < 1) {
-            log.warn(SetmealConstant.ADD_SETMEAL_RESULT_DEFEAT);
-            throw new BusinessException(SetmealConstant.ADD_SETMEAL_RESULT_DEFEAT
-                    , SetmealConstant.CODE_BEHIND);
-        }
-    }
-
-    //新增套餐：校验参数
-    private static void validAddSetmealParam(SetmealAndDishBody setmealAndDishBody) {
         if (!CheckIsValidUtil.isValid(setmealAndDishBody)) {
             log.warn(SetmealConstant.ADD_SETMEAL_PARAM_ERROR);
             throw new BusinessException(SetmealConstant.ADD_SETMEAL_PARAM_ERROR
                     , SetmealConstant.CODE_FRONT);
         }
+        Integer row1 = setmealMapper.insertSetmeal(setmealAndDishBody);
+        List<SetmealDishBody> setmealDishBodies = batchKeyValueToSetmealDishBody(
+                setmealAndDishBody.getId(), setmealAndDishBody.getSetmealDishes());
+        Integer row2 = setmealMapper.insertSetmealDish(setmealDishBodies);
+        if (row1 < 1 || row2 < 1) {
+            log.warn(SetmealConstant.ADD_SETMEAL_RESULT_DEFEAT);
+            throw new BusinessException(SetmealConstant.ADD_SETMEAL_RESULT_DEFEAT
+                    , SetmealConstant.CODE_BEHIND);
+        }
+        return SetmealConstant.ADD_SETMEAL_PASS_RESULT;
     }
 
     //修改套餐
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer updateSetmeal(SetmealAndDishBody setmealAndDishBody) {
-        validUpdateSetmealParam(setmealAndDishBody);
-        Integer row1 = updateSetmealDo(setmealAndDishBody);
-        deleteSetmealDish(setmealAndDishBody.getId());
-        List<SetmealDishBody> setmealDishBodies = fillKeyToSetmealAndDishBody(setmealAndDishBody);
-        Integer row2 = insertSetmealDishDo(setmealDishBodies);
-        validUpdateSetmealResult(row1, row2);
-        return SetmealConstant.END_RIGHT_RESULT_CODE;
-    }
-
-    //修改套餐：校验参数
-    private static void validUpdateSetmealParam(SetmealAndDishBody setmealAndDishBody) {
         if (!CheckIsValidUtil.isValid(setmealAndDishBody)) {
             log.warn(SetmealConstant.UPDATE_SETMEAL_PARAM_ERROR);
             throw new BusinessException(SetmealConstant.UPDATE_SETMEAL_PARAM_ERROR
                     , SetmealConstant.CODE_FRONT);
         }
-    }
-
-    //修改套餐：校验结果
-    private static void validUpdateSetmealResult(Integer row1, Integer row2) {
+        Integer row1 = updateSetmealDo(setmealAndDishBody);
+        deleteSetmealDish(setmealAndDishBody.getId());
+        List<SetmealDishBody> setmealDishBodies = batchKeyValueToSetmealDishBody(
+                setmealAndDishBody.getId(), setmealAndDishBody.getSetmealDishes());
+        Integer row2 = setmealMapper.insertSetmealDish(setmealDishBodies);
         if (row1 < 1 || row2 < 1) {
             log.warn(SetmealConstant.UPDATE_SETMEALRESULT_ERROR);
             throw new BusinessException(SetmealConstant.UPDATE_SETMEALRESULT_ERROR
                     , SetmealConstant.CODE_BEHIND);
         }
+        return SetmealConstant.END_RIGHT_RESULT_CODE;
     }
 
     //修改套餐：执行
@@ -140,70 +92,51 @@ public class SetmealImpl implements SetmealService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer deleteSetmealAndSetmealDish(List<Long> ids) {
-        validDeleteSetmealAndSetmealDishParam(ids);
-        Integer row1 = batchDeleteSetmealDo(ids);
-        Integer row2 = batchDeleteSetmealDishDo(ids);
-        log.info(SetmealConstant.DELETE_SETMEAL_AND_DISH_RESULT_RIGHT, row1, row2);
-        return SetmealConstant.END_RIGHT_RESULT_CODE;
-    }
-
-    //批量删除套餐：批量删除餐品
-    private Integer batchDeleteSetmealDishDo(List<Long> ids) {
-        Integer row2 = setmealMapper.batchDeleteSetmealDish(ids);
-        return row2;
-    }
-
-    //批量删除套餐：套餐
-    private static void validDeleteSetmealAndSetmealDishParam(List<Long> ids) {
         if (!CheckIsValidUtil.isValid(ids)) {
             log.warn(SetmealConstant.DELETE_SETMEAL_AND_DISH_PARRAM_ERROR);
             throw new BusinessException(SetmealConstant.DELETE_SETMEAL_AND_DISH_PARRAM_ERROR
                     , SetmealConstant.CODE_FRONT);
         }
-    }
-
-    //批量删除套餐：批量删除套餐
-    private Integer batchDeleteSetmealDo(List<Long> ids){
-        Integer row = setmealMapper.batchDeleteSetmeal(ids);
-        if (row < 1) {
+        Integer row1 = setmealMapper.batchDeleteSetmeal(ids);
+        if (row1 < 1) {
             log.warn(SetmealConstant.DELETE_SETMEAL_AND_DISH_RESULT_ERROR);
             throw new BusinessException(SetmealConstant.DELETE_SETMEAL_AND_DISH_RESULT_ERROR
                     , SetmealConstant.CODE_BEHIND);
         }
-        return row;
+        Integer row2 = setmealMapper.batchDeleteSetmealDish(ids);
+        log.info(SetmealConstant.DELETE_SETMEAL_AND_DISH_RESULT_RIGHT, row1, row2);
+        return SetmealConstant.END_RIGHT_RESULT_CODE;
     }
 
     //修改套餐状态
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer updateSetmealStatus(Integer status, Integer id) {
-        validUpdateSetmealStatusParam(status, id);
-        Integer row = updateSetmealStatusDo(status, id);
-        return row;
-    }
-
-    //修改套餐状态：执行
-    private Integer updateSetmealStatusDo(Integer status, Integer id) {
-        Integer row = setmealMapper.updateSetmealStatus(status, id);
-        return row;
-    }
-
-    //修改套餐状态：校验参数
-    private static void validUpdateSetmealStatusParam(Integer status, Integer id) {
         if (!CheckIsValidUtil.isValid(status) || !CheckIsValidUtil.isValid(id)) {
             log.warn(SetmealConstant.UPDATE_SETMEAL_STATUS_PARAM_ERROR);
             throw new BusinessException(SetmealConstant.UPDATE_SETMEAL_STATUS_PARAM_ERROR
                     , SetmealConstant.CODE_FRONT);
         }
+        Integer row = setmealMapper.updateSetmealStatus(status, id);
+        return row;
     }
 
     //根据id查询套餐
     @Override
     public SetmealAndDishBody selectSetmealById(long id) {
-        validSelectSetmealByIdParam(id);
-        SetmealAndDishBody setmealAndDishBody = selectSetmealByIdDo(id);
-        List<SetmealDishBody> setmealDishBodes = selectSetmealDishByIdDo(id);
-        fillSetmealAndDish(setmealAndDishBody, setmealDishBodes);
+        if (!CheckIsValidUtil.isValid(id)) {
+            log.warn(SetmealConstant.SELECT_SETMEAL_BY_ID_PARAM_ERROR);
+            throw new BusinessException(SetmealConstant.SELECT_SETMEAL_BY_ID_PARAM_ERROR
+                    , SetmealConstant.CODE_FRONT);
+        }
+        SetmealAndDishBody setmealAndDishBody = setmealMapper.selectSetmealById(id);
+        List<SetmealDishBody> setmealDishBodes = setmealMapper.selectSetmealDishById(id);
+        setmealAndDishBody.setSetmealDishes(setmealDishBodes);
+        if (!CheckIsValidUtil.isValid(setmealAndDishBody)) {
+            log.warn(SetmealConstant.SELECT_SETMEAL_BY_ID_RESULT_ERROR);
+            throw new BusinessException(SetmealConstant.SELECT_SETMEAL_BY_ID_RESULT_ERROR
+                    , SetmealConstant.CODE_BEHIND);
+        }
         return setmealAndDishBody;
     }
 
@@ -218,47 +151,18 @@ public class SetmealImpl implements SetmealService {
         }
     }
 
-    //根据id查询套餐：执行通过餐品id查询套餐
-    private List<SetmealDishBody> selectSetmealDishByIdDo(long id) {
-        List<SetmealDishBody> setmealDishBodes = setmealMapper.selectSetmealDishById(id);
-        return setmealDishBodes;
-    }
-
-    //根据id查询套餐：执行通过id查询套餐
-    private SetmealAndDishBody selectSetmealByIdDo(long id) {
-        SetmealAndDishBody setmealAndDishBody = setmealMapper.selectSetmealById(id);
-        return setmealAndDishBody;
-    }
-
-    //根据id查询套餐：校验参数
-    private static void validSelectSetmealByIdParam(long id) {
-        if (!CheckIsValidUtil.isValid(id)) {
-            log.warn(SetmealConstant.SELECT_SETMEAL_BY_ID_PARAM_ERROR);
-            throw new BusinessException(SetmealConstant.SELECT_SETMEAL_BY_ID_PARAM_ERROR
-                    , SetmealConstant.CODE_FRONT);
-        }
-    }
-
     //删除餐品
     private void deleteSetmealDish(long setmealId) {
-        validDeleteSetmealDishParam(setmealId);
-        deleteSetmealDishDo(setmealId);
-    }
-
-    private void deleteSetmealDishDo(long setmealId) {
+        if (!CheckIsValidUtil.isValid(setmealId)) {
+            log.warn(SetmealConstant.DELETE_SETMEAL_DISH_PARAM_ERROR);
+            throw new BusinessException(SetmealConstant.DELETE_SETMEAL_DISH_PARAM_ERROR
+                    , SetmealConstant.CODE_FRONT);
+        }
         Integer row = setmealMapper.deleteSetmealDish(setmealId);
         if (row < 1) {
             log.warn(SetmealConstant.DELETE_SETMEAL_DISH_RESULT_ERROR);
             throw new BusinessException(SetmealConstant.DELETE_SETMEAL_DISH_RESULT_ERROR
                     , SetmealConstant.CODE_BEHIND);
-        }
-    }
-
-    private void validDeleteSetmealDishParam(long setmealId) {
-        if (!CheckIsValidUtil.isValid(setmealId)) {
-            log.warn(SetmealConstant.DELETE_SETMEAL_DISH_PARAM_ERROR);
-            throw new BusinessException(SetmealConstant.DELETE_SETMEAL_DISH_PARAM_ERROR
-                    , SetmealConstant.CODE_FRONT);
         }
     }
 

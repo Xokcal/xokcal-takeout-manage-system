@@ -9,11 +9,11 @@
         <where>
             <!-- 时间范围：开始时间 -->
             <if test="p.beginTime != null and p.beginTime != ''">
-                and order_time &gt;= #{p.beginTime}
+                date_format(order_time, '%Y-%m-%d') &gt;= #{p.beginTime} -- &gt; -> 大于的意思
             </if>
             <!-- 时间范围：结束时间 -->
             <if test="p.endTime != null and p.endTime != ''">
-                and order_time &lt;= #{p.endTime}
+                and date_format(order_time,'%Y-%m-%d') &lt;= #{p.endTime} -- &lt; -> 小于的意思
             </if>
             <!-- 订单号模糊查询 -->
             <if test="p.number != null and p.number != ''">

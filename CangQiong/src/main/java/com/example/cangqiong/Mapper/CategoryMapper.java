@@ -23,7 +23,7 @@ public interface CategoryMapper {
     Integer addNewCategory(AddCategoryBody addCategoryBody);
 
     //修改分类
-    @Update("update category set name = #{name},sort = #{sort}")
+    @Update("update category set name = #{name},sort = #{sort} where id = #{id}")
     Integer updateCategory(UpdateCategoryBody updateCategoryBody);
 
     //修改状态
