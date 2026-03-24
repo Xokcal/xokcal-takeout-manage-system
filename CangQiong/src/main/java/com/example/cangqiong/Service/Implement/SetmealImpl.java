@@ -140,17 +140,6 @@ public class SetmealImpl implements SetmealService {
         return setmealAndDishBody;
     }
 
-    //根据id查询套餐：组装结果
-    private static void fillSetmealAndDish(SetmealAndDishBody setmealAndDishBody
-            , List<SetmealDishBody> setmealDishBodes) {
-        setmealAndDishBody.setSetmealDishes(setmealDishBodes);
-        if (!CheckIsValidUtil.isValid(setmealAndDishBody)) {
-            log.warn(SetmealConstant.SELECT_SETMEAL_BY_ID_RESULT_ERROR);
-            throw new BusinessException(SetmealConstant.SELECT_SETMEAL_BY_ID_RESULT_ERROR
-                    , SetmealConstant.CODE_BEHIND);
-        }
-    }
-
     //删除餐品
     private void deleteSetmealDish(long setmealId) {
         if (!CheckIsValidUtil.isValid(setmealId)) {

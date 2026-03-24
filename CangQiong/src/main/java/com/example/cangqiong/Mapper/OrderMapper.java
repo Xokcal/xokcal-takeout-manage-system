@@ -49,7 +49,7 @@ public interface OrderMapper {
             , @Param("cancelTime") LocalDateTime cancelTime);
 
     //完成
-    @Update("update orders set status = #{status}  where id = #{id}")
+    @Update("update orders set status = #{status} , checkout_time = now() where id = #{id}")
     Integer updateOrderComplete(@Param("status") Integer status, @Param("id") long id);
 
     //取消

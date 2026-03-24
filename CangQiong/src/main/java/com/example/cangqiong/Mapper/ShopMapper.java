@@ -14,4 +14,5 @@ public interface ShopMapper {
     //修改营业状态
     @Update("update shop set status = #{status} where id = 1")
     Integer updateShopStatus(Integer status);
+
 }
