@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.RoundingMode;
+
 @Slf4j
 @Service
 public class WorkspaceImpl implements WorkspaceService {
@@ -26,9 +28,12 @@ public class WorkspaceImpl implements WorkspaceService {
         WorkspaceBusinessVO workspaceBusinessVO = new WorkspaceBusinessVO().builder()
                 .newUsers(workspaceMapper.getTotalNewUser())
                 .validOrderCount(workspaceMapper.getValidOrder())
-                .orderCompletionRate(workspaceMapper.getCompleteAccuracy())
-                .unitPrice(workspaceMapper.getAvgAmount())
-                .turnover(workspaceMapper.getTotalAmount())
+                .orderCompletionRate(workspaceMapper.getCompleteAccuracy()
+                        .setScale(WorkspaceConstant.BIGDECIMAL_REOUDING_MODE_VALUE , RoundingMode.HALF_UP))
+                .unitPrice(workspaceMapper.getAvgAmount().setScale(WorkspaceConstant
+                        .BIGDECIMAL_REOUDING_MODE_VALUE , RoundingMode.HALF_UP))
+                .turnover(workspaceMapper.getTotalAmount().setScale(WorkspaceConstant
+                        .BIGDECIMAL_REOUDING_MODE_VALUE , RoundingMode.HALF_UP))
                 .build();
         if (!CheckIsValidUtil.isValid(workspaceBusinessVO)){
             log.warn(WorkspaceConstant.GET_DAILY_MANAGE_DATE_RESULT_ERROR);

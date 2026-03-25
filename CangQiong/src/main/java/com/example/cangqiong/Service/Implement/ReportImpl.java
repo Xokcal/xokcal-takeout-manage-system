@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,7 +101,8 @@ public class ReportImpl implements ReportService {
         ReportOrdersStatisticsVO reportOrdersStatisticsVO = new ReportOrdersStatisticsVO().builder()
                 .dateList(StringUtil.arrElementAssembledStringSeparateIsDot
                         (reportMapper.orderDateList(reportTimeRequestBody)))
-                .orderCompletionRate(reportMapper.orderCompletionRate(reportTimeRequestBody))
+                .orderCompletionRate(reportMapper.orderCompletionRate(reportTimeRequestBody)
+                        .setScale(ReportConstant.BIGDECIMAL_REOUDING_MODE_VALUE , RoundingMode.HALF_UP))
                 .orderCountList(StringUtil.arrElementAssembledStringSeparateIsDot
                         (reportMapper.orderCountList(reportTimeRequestBody)))
                 .totalOrderCount(reportMapper.orderCount(reportTimeRequestBody))

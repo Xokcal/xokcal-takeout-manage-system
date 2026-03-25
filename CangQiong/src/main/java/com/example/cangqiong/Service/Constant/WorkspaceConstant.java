@@ -13,4 +13,6 @@ public class WorkspaceConstant {
     public static final String GET_SETMEAL_VIEW_RESULT_ERROR = "查询套餐总览，结果错误！！";
     public static final String GET_DISH_VIEW_RESULT_ERROR = "菜品总览，结果错误！！";
     public static final String GET_ORDER_VIEW_RESULT_ERROR = "查询订单管理数据，参数错误！！";
+
+    public static final Integer BIGDECIMAL_REOUDING_MODE_VALUE = 2;
 }

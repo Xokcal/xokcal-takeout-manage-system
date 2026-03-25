@@ -15,4 +15,5 @@ public class ReportConstant {
     public static final String TOP10_REPORT_RESULT_ERROR = "top10数据，结果错误！！";
     public static final String GET_ORDER_REPORT_PARAM_ERROR = "订单统计接口，参数错误！！";
     public static final String GET_ORDER_REPORT_RESULT_ERROR = "订单统计接口，结果错误！！";
+    public static final Integer BIGDECIMAL_REOUDING_MODE_VALUE = 2;
 }
