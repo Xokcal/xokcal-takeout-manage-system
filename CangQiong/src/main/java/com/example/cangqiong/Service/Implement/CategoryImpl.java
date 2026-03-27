@@ -3,10 +3,7 @@ package com.example.cangqiong.Service.Implement;
 import com.example.cangqiong.Common.CheckIsValid.CheckIsValidUtil;
 import com.example.cangqiong.Common.Exception.BusinessException;
 import com.example.cangqiong.Mapper.CategoryMapper;
-import com.example.cangqiong.Pojo.Category.AddCategoryBody;
-import com.example.cangqiong.Pojo.Category.CategoryBody;
-import com.example.cangqiong.Pojo.Category.CategoryPageResonseBody;
-import com.example.cangqiong.Pojo.Category.UpdateCategoryBody;
+import com.example.cangqiong.Pojo.Category.*;
 import com.example.cangqiong.Service.CategoryService;
 import com.example.cangqiong.Service.Constant.CategoryConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -25,14 +22,15 @@ public class CategoryImpl implements CategoryService {
 
     //分类分页查询
     @Override
-    public CategoryPageResonseBody pageCategory(String name, Integer type, Integer page, Integer pageSize) {
-        if (!CheckIsValidUtil.isValid(page) || !CheckIsValidUtil.isValid(pageSize)) {
+    public CategoryPageResonseBody pageCategory(CategoryPageRequestBody categoryPageRequestBody) {
+        if (!CheckIsValidUtil.isValid(categoryPageRequestBody)) {
             log.warn(CategoryConstant.CATEGORY_PAGE_PARAM_ERROR);
             throw new BusinessException(CategoryConstant.CATEGORY_PAGE_PARAM_ERROR
                     , CategoryConstant.CODE_FRONT);
         }
-        Integer start = CategoryConstant.startPage(page, pageSize);
-        List<CategoryBody> r = categoryMapper.queryCategoryPage(name, type, start, pageSize);
+        Integer start = CategoryConstant.startPage(categoryPageRequestBody.getPage()
+                , categoryPageRequestBody.getPageSize());
+        List<CategoryBody> r = categoryMapper.queryCategoryPage(categoryPageRequestBody , start);
         if (!CheckIsValidUtil.isValid(r)) {
             log.warn(CategoryConstant.CATEGORY_PAGE_RESULT_ERROR);
             throw new BusinessException(CategoryConstant.CATEGORY_PAGE_RESULT_ERROR

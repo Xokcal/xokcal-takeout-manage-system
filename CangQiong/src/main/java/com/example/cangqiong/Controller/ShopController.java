@@ -1,5 +1,6 @@
 package com.example.cangqiong.Controller;
 
+import com.example.cangqiong.Common.Annotation.Operation;
 import com.example.cangqiong.Pojo.R;
 import com.example.cangqiong.Service.Implement.ShopImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ public class ShopController {
 
     //获取营业状态
     @GetMapping("/shop/status")
+    @Operation(summary = "查询" , description = "获取营业状态")
     R getShopStatus(){
         Integer r = shopImpl.getShopStatus();
         return new R().ok(r , new Object());
@@ -23,6 +25,7 @@ public class ShopController {
 
     //修改营业状态
     @PutMapping("/shop/{status}")
+    @Operation(summary = "修改" , description = "修改营业状态")
     R updateShopStatus(@PathVariable Integer status){
         Integer r = shopImpl.updateShopStatus(status);
         return new R().ok(r);

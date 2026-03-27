@@ -1,5 +1,6 @@
 package com.example.cangqiong.Controller;
 
+import com.example.cangqiong.Common.Annotation.Operation;
 import com.example.cangqiong.Common.Oss.Oss;
 import com.example.cangqiong.Pojo.R;
 import com.example.cangqiong.Service.Implement.CommonImpl;
@@ -19,7 +20,9 @@ public class CommonController {
     @Autowired
     private CommonImpl commonImpl;
 
+    //上传图片
     @PostMapping("/common/upload")
+    @Operation(summary = "上传" , description = "上传图片到OSS")
     R uploadFile(@RequestBody MultipartFile file){
         String r = commonImpl.uploadFile(file);
         return new R().ok(r);

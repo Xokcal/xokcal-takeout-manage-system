@@ -1,5 +1,6 @@
 package com.example.cangqiong.Controller;
 
+import com.example.cangqiong.Common.Annotation.Operation;
 import com.example.cangqiong.Common.Jwt.JwtUtil;
 import com.example.cangqiong.Pojo.*;
 import com.example.cangqiong.Service.Implement.EmployeeImpl;
@@ -20,6 +21,7 @@ public class EmployeeController {
 
     //员工登录
     @PostMapping("/employee/login")
+    @Operation(summary = "登录" , description = "员工登录处理")
     R employeeLoginHander(@RequestBody LoginGet loginGet){
         EmployeeLoginBody r = employee.employeeLoginBodyMain(loginGet);
         return new R().ok(r);
@@ -27,6 +29,7 @@ public class EmployeeController {
 
     //新增员工
     @PostMapping("/employee")
+    @Operation(summary = "新增" , description = "新增员工")
     R addNewEmployee(@RequestBody AddEmployeeRequstBody addEmployeeRequstBody){
         Integer r = employee.addNewEmployeeMain(addEmployeeRequstBody);
         return new R().ok(r);
@@ -34,6 +37,7 @@ public class EmployeeController {
 
     //分页查询员工信息
     @GetMapping("/employee/page")
+    @Operation(summary = "分页查询" , description = "分页查询员工信息")
     R selectEmployeePage(@RequestParam(value = "name" , required = false) String name
             , @RequestParam("page") Integer page , @RequestParam("pageSize") Integer pageSize){
         EmployeePageResonseBody r = employee.selectEmployeePageMain(name, page, pageSize);
@@ -42,6 +46,7 @@ public class EmployeeController {
 
     //根据id查询员工
     @GetMapping("/employee/{id}")
+    @Operation(summary = "根据id查询" , description = "根据id查询员工")
     R selectEmployeeById(@PathVariable("id") long id){
         EmployeeBody target = employee.selectEmployeeByIdMain(id);
         return new R().ok(target);
@@ -49,6 +54,7 @@ public class EmployeeController {
 
     //修改员工信息
     @PutMapping("/employee")
+    @Operation(summary = "修改" , description = "修改员工信息")
     R updateEmployee(@RequestBody AddEmployeeRequstBody addEmployeeRequstBody){
         Integer r = employee.updateEmployeeMain(addEmployeeRequstBody);
         return new R().ok(r);
@@ -56,6 +62,7 @@ public class EmployeeController {
 
     //修改密码
     @PutMapping("/employee/editPassword")
+    @Operation(summary = "修改" , description = "修改密码")
     R updatePassword(@RequestHeader("token") String token ,
                      @RequestBody UpdatePasswordRquestBody updatePasswordRquestBody){
         Integer tokenId = jwtUtil.getTokenId(token);
@@ -65,6 +72,7 @@ public class EmployeeController {
 
     //修改员工状态
     @PostMapping("/employee/status/{status}")
+    @Operation(summary = "修改" , description = "修改员工状态")
     R updateEmployeeStatus(@PathVariable("status") Integer status , @RequestParam("id") Integer id){
         Integer r = employee.updateEmplloyeeStatusMain(status, id);
         return new R().ok(r);
@@ -72,6 +80,7 @@ public class EmployeeController {
 
     //退出登录
     @PostMapping("/employee/logout")
+    @Operation(summary = "输出ok" , description = "退出登录")
     R employeeLogout(){
         log.info("退出登录！！");
         return new R().ok();
@@ -79,3 +88,5 @@ public class EmployeeController {
 
 
 }
+
+

@@ -1,5 +1,6 @@
 package com.example.cangqiong.Controller;
 
+import com.example.cangqiong.Common.Annotation.Operation;
 import com.example.cangqiong.Pojo.R;
 import com.example.cangqiong.Pojo.Workspace.WorkspaceBusinessVO;
 import com.example.cangqiong.Pojo.Workspace.WorkspaceDishVO;
@@ -22,6 +23,7 @@ public class WorkspaceController {
 
     //得到每日运用报表数据
     @GetMapping("/workspace/businessData")
+    @Operation(summary = "查询" , description = "得到每日运用报表数据")
     R getBusinessReport(){
         WorkspaceBusinessVO r = workspaceImpl.getReportBusinessView();
         return new R().ok(r);
@@ -29,6 +31,7 @@ public class WorkspaceController {
 
     //得到套餐总览
     @GetMapping("/workspace/overviewSetmeals")
+    @Operation(summary = "查询" , description = "得到套餐总览")
     R getSetmealView(){
         WorkspaceSetmealVO r = workspaceImpl.getSetmealView();
         return new R().ok(r);
@@ -36,6 +39,7 @@ public class WorkspaceController {
 
     //菜品总览
     @GetMapping("/workspace/overviewDishes")
+    @Operation(summary = "查询" , description = "菜品总览")
     R getDishView(){
         WorkspaceDishVO r = workspaceImpl.getDishView();
         return new R().ok(r);
@@ -43,6 +47,7 @@ public class WorkspaceController {
 
     //订单管理
     @GetMapping("/workspace/overviewOrders")
+    @Operation(summary = "查询" , description = "订单管理")
     R getOrderView(){
         WorkspaceOrderVO r = workspaceImpl.getOrderView();
         return new R().ok(r);

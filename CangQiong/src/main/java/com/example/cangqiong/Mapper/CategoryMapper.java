@@ -2,6 +2,7 @@ package com.example.cangqiong.Mapper;
 
 import com.example.cangqiong.Pojo.Category.AddCategoryBody;
 import com.example.cangqiong.Pojo.Category.CategoryBody;
+import com.example.cangqiong.Pojo.Category.CategoryPageRequestBody;
 import com.example.cangqiong.Pojo.Category.UpdateCategoryBody;
 import org.apache.ibatis.annotations.*;
 
@@ -11,8 +12,8 @@ import java.util.List;
 public interface CategoryMapper {
 
     //分类分页查询
-    List<CategoryBody> queryCategoryPage(@Param("name") String name ,@Param("type") Integer type
-            , @Param("start") Integer start , @Param("pageSize") Integer pageSize);
+    List<CategoryBody> queryCategoryPage(@Param("e") CategoryPageRequestBody categoryPageRequestBody
+    ,@Param("start") Integer start);
 
     //分类总数
     @Select("select count(*) from category")

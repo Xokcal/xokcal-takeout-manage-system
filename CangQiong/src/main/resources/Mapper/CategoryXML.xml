@@ -7,13 +7,14 @@
     <select id="queryCategoryPage" resultType="com.example.cangqiong.Pojo.Category.CategoryBody">
         select * from category
             <where>
-                <if test="type != null and type != ''">
-                    type = #{type}
+                <if test="e.type != null and e.type != ''">
+                    type = #{e.type}
                 </if>
-                <if test="name != null and name != '' ">
-                    and name = #{name}
+                <if test="e.name != null and e.name != '' ">
+                    and name = #{e.name}
                 </if>
             </where>
-        limit #{start} , #{pageSize}
+        limit #{start} , #{e.pageSize}
     </select>
 </mapper>
+
