@@ -95,6 +95,18 @@
 			<version>3.18.0</version>
 		</dependency>
 
+		<!-- Redis配置 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+		<!-- Redis线程池 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+		</dependency>
+
 		<!-- 若使用 JDK 9+（如你的 JDK 17），需添加 JAXB 依赖（OSS SDK 依赖） -->
 		<dependency>
 			<groupId>jakarta.xml.bind</groupId>

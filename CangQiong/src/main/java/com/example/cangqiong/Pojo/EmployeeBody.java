@@ -2,9 +2,10 @@ package com.example.cangqiong.Pojo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class EmployeeBody {
+public class EmployeeBody implements Serializable {
     private Integer id;
     private String idNumber;
     private String name;

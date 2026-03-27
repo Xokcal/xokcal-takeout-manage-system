@@ -3,10 +3,12 @@ package com.example.cangqiong.Service.Implement;
 import com.example.cangqiong.Common.CheckIsValid.CheckIsValidUtil;
 import com.example.cangqiong.Common.Jwt.JwtUtil;
 import com.example.cangqiong.Common.Exception.BusinessException;
+import com.example.cangqiong.Common.Redis.RedisUtil;
 import com.example.cangqiong.Mapper.EmployeeMapper;
 import com.example.cangqiong.Pojo.*;
 import com.example.cangqiong.Service.Constant.EmployeeConstant;
 import com.example.cangqiong.Service.EmployeeService;
+import com.example.cangqiong.Service.Redis.EmployeeRedis;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,9 @@ public class EmployeeImpl implements EmployeeService {
 
     @Autowired
     private EmployeeMapper employeeMapper;
+
+    @Autowired
+    private EmployeeRedis employeeRedis;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -63,6 +68,14 @@ public class EmployeeImpl implements EmployeeService {
             throw new BusinessException(EmployeeConstant.SELECT_PAGE_PARAM_ERROR
                     , EmployeeConstant.CODE_FRONT);
         }
+        if (employeeRedis.redisEmployeeIsExists(name , page , pageSize)){
+            return (EmployeePageResonseBody) employeeRedis.getRedisEmployeePage(name, page, pageSize);
+        }
+        return getEmployeePageResonseBody(name, page, pageSize);
+    }
+
+    //分页查询：没用缓存情况
+    private EmployeePageResonseBody getEmployeePageResonseBody(String name, Integer page, Integer pageSize) {
         Integer start = EmployeeConstant.startPage(page, pageSize);
         List<EmployeeBody> employeeBodies = employeeMapper.selectEmployeePage(name, start, pageSize);
         if (!CheckIsValidUtil.isValid(employeeBodies)) {
@@ -70,7 +83,10 @@ public class EmployeeImpl implements EmployeeService {
             throw new BusinessException(EmployeeConstant.SELECT_PAGE_RESULT_ERROR
                     , EmployeeConstant.CODE_BEHIND);
         }
-        return new EmployeePageResonseBody(selectTotal(), employeeBodies);
+        EmployeePageResonseBody employeePageResonseBody = new EmployeePageResonseBody(selectTotal(), employeeBodies);
+        employeeRedis.putRedisEmployeePage(employeePageResonseBody
+                , name, page, pageSize, 10);
+        return employeePageResonseBody;
     }
 
     //根据id查询员工
@@ -99,6 +115,7 @@ public class EmployeeImpl implements EmployeeService {
             throw new BusinessException(EmployeeConstant.UPDATE_EMPOYEE_PARAM_ERROR
                     , EmployeeConstant.CODE_FRONT);
         }
+        employeeRedis.deleteAllRedisEmployeePage();
         Integer row = employeeMapper.updateEmployee(addEmployeeRequstBody);
         return row;
     }
@@ -131,6 +148,7 @@ public class EmployeeImpl implements EmployeeService {
             throw new BusinessException(EmployeeConstant.UPDATE_EMPLOYEE_STATUS_PARAM_ERROR
                     , EmployeeConstant.CODE_FRONT);
         }
+        employeeRedis.deleteAllRedisEmployeePage();
         Integer integer = employeeMapper.updateEmployeeStatus(status, id);
         return integer;
     }
