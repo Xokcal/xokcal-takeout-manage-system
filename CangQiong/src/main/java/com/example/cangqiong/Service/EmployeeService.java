@@ -5,7 +5,7 @@ import com.example.cangqiong.Pojo.*;
 public interface EmployeeService {
     public EmployeeLoginBody employeeLoginBodyMain(LoginGet loginGet);
     public Integer addNewEmployeeMain(AddEmployeeRequstBody addEmployeeRequstBody);
-    public EmployeePageResonseBody selectEmployeePageMain(String name , Integer page , Integer pageSize);
+    public EmployeePageResonseBody selectEmployeePageMain(EmployeePageRequestBody employeePageRequestBody);
     public EmployeeBody selectEmployeeByIdMain(long id);
     public Integer updateEmployeeMain(AddEmployeeRequstBody addEmployeeRequstBody);
     public Integer updatePasswordMain(Integer id , UpdatePasswordRquestBody updatePasswordRquestBody);

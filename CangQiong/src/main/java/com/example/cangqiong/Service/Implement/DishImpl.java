@@ -169,9 +169,7 @@ public class DishImpl implements DishService {
             throw new BusinessException(DishConstant.DISH_KEY_TO_FLAVOR_PARAM_ERROR
                     , DishConstant.CODE_FRONT);
         }
-        list.forEach(E -> {
-            E.setDishId(id);
-        });
+        list.forEach(e -> e.setDishId(id));
         return list;
     }
 

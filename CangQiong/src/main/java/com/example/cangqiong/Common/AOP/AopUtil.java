@@ -10,6 +10,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -27,7 +28,7 @@ public class AopUtil {
         MethodSignature signature = (MethodSignature) pjp.getSignature();
         Method method = signature.getMethod();
         Operation operate = method.getAnnotation(Operation.class);
-        log.info("接口：{}，方式：{}，执行时间：{}"
+        log.info("接口：{}    方式：{}    执行时间：{}"
                 , operate.summary() , operate.description()
                 , LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd : hh-mm-ss")));
         Object proceed = pjp.proceed();

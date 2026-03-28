@@ -7,11 +7,11 @@
     <select id="selectEmployeePage" resultType="com.example.cangqiong.Pojo.EmployeeBody">
         select * from employee
             <where>
-                <if test="name != null and name != '' ">
-                     name like concat('%',#{name},'%')
+                <if test="p.name != null and p.name != '' ">
+                     name like concat('%',#{p.name},'%')
                 </if>
             </where>
-        limit #{start} , #{pageSize}
+        limit #{start} , #{p.pageSize}
     </select>
 </mapper>
 

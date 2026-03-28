@@ -1,9 +1,6 @@
 package com.example.cangqiong.Mapper;
 
-import com.example.cangqiong.Pojo.AddEmployeeRequstBody;
-import com.example.cangqiong.Pojo.Employee;
-import com.example.cangqiong.Pojo.EmployeeBody;
-import com.example.cangqiong.Pojo.EmployeeLoginBody;
+import com.example.cangqiong.Pojo.*;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -21,8 +18,8 @@ public interface EmployeeMapper {
     Integer addNewEmployee(AddEmployeeRequstBody addEmployeeRequstBody);
 
     //分页查询员工
-    List<EmployeeBody> selectEmployeePage(@Param("name") String name ,@Param("start") Integer start
-            ,@Param("pageSize") Integer pageSize);
+    List<EmployeeBody> selectEmployeePage(@Param("start") Integer start
+            ,@Param("p") EmployeePageRequestBody employeePageRequestBody);
 
     //员工总数
     @Select("select count(*) from employee")

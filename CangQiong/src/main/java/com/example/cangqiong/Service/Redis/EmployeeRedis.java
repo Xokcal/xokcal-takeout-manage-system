@@ -5,6 +5,7 @@ import com.example.cangqiong.Common.Exception.BusinessException;
 import com.example.cangqiong.Common.Redis.RedisUtil;
 import com.example.cangqiong.Mapper.EmployeeMapper;
 import com.example.cangqiong.Pojo.EmployeeBody;
+import com.example.cangqiong.Pojo.EmployeePageRequestBody;
 import com.example.cangqiong.Pojo.EmployeePageResonseBody;
 import com.example.cangqiong.Service.RedisConstant.EmployeeRedisConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -23,16 +24,18 @@ public class EmployeeRedis {
     private RedisUtil redisUtil;
 
     //reids储存员工分页
-    public void putRedisEmployeePage(Object data ,String name , Integer page , Integer pageSize , Integer timeOut){
-        String key = "employee_page:name="+name+"&page="+page+"&pageSize="+pageSize;
+    public void putRedisEmployeePage(Object data ,EmployeePageRequestBody employeePageRequestBody, Integer timeOut){
+        String key = "employee_page:name="+employeePageRequestBody.getName()
+                +"&page="+employeePageRequestBody.getPage()+"&pageSize="+employeePageRequestBody.getPageSize();
         log.info(EmployeeRedisConstant.REDIS_PUT_EMPLOYEE_PAGE_RESULT_SUCCESS,data);
         Integer randomTimeOut = timeOut + new Random().nextInt(4);
         redisUtil.put(key,data,randomTimeOut);
     }
 
     //redis得到员工分页
-    public Object getRedisEmployeePage(String name , Integer page , Integer pageSize){
-        String key = "employee_page:name="+name+"&page="+page+"&pageSize="+pageSize;
+    public Object getRedisEmployeePage(EmployeePageRequestBody employeePageRequestBody){
+        String key = "employee_page:name="+employeePageRequestBody.getName()
+                +"&page="+employeePageRequestBody.getPage()+"&pageSize="+employeePageRequestBody.getPageSize();
         Object employeePageDataAndTotal = redisUtil.get(key);
         if (!CheckIsValidUtil.isValid(employeePageDataAndTotal)){
             log.warn(EmployeeRedisConstant.REDIS_GET_EMPLOYEE_PAGE_RESULT_ERROR);
@@ -44,8 +47,9 @@ public class EmployeeRedis {
     }
 
     //判断查询的员工分页是否存入redis
-    public boolean redisEmployeeIsExists(String name , Integer page , Integer pageSize){
-        String key = "employee_page:name="+name+"&page="+page+"&pageSize="+pageSize;
+    public boolean redisEmployeeIsExists(EmployeePageRequestBody employeePageRequestBody){
+        String key = "employee_page:name="+employeePageRequestBody.getName()+"&page="
+                +employeePageRequestBody.getPage()+"&pageSize="+employeePageRequestBody.getPageSize();
         Object employeePageData = redisUtil.get(key);
         return employeePageData == null ? false : true; //没存false，存了true
     }

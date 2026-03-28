@@ -22,7 +22,7 @@ public class CategoryController {
 
     //分类分页查询
     @GetMapping("/category/page")
-    @Operation(summary = "分类分页" , description = "获取分类的分页查询")
+    @Operation(summary = "分页查询" , description = "获取分类的分页查询")
     R queryCategoryPage(CategoryPageRequestBody categoryPageRequestBody){
         CategoryPageResonseBody r = categoryImpl.pageCategory(categoryPageRequestBody);
         return new R().ok(r);
@@ -30,7 +30,7 @@ public class CategoryController {
 
     //新增分类
     @PostMapping("/category")
-    @Operation(summary = "分类新增" , description = "添加新的分类类型")
+    @Operation(summary = "新增" , description = "添加新的分类类型")
     R addCategory(@RequestBody AddCategoryBody addCategoryBody){
         Integer r = categoryImpl.addCategory(addCategoryBody);
         return new R().ok(r);
@@ -38,7 +38,7 @@ public class CategoryController {
 
     //修改分类
     @PutMapping("/category")
-    @Operation(summary = "修改分类" , description = "修改分类信息")
+    @Operation(summary = "修改" , description = "修改分类信息")
     R updateCategory(@RequestBody UpdateCategoryBody updateCategoryBody){
         Integer r = categoryImpl.updateCategory(updateCategoryBody);
         return new R().ok(r);
@@ -46,7 +46,7 @@ public class CategoryController {
 
     //修改状态
     @PostMapping("/category/status/{status}")
-    @Operation(summary = "修改分类启动状态" , description = "修改分页是否启动（0：关闭，1：启动）")
+    @Operation(summary = "修改" , description = "修改分页是否启动（0：关闭，1：启动）")
     R updateCategoryStatus(@PathVariable("status") Integer status , @RequestParam("id") Integer id){
         Integer r = categoryImpl.updateCategoryStatus(status, id);
         return new R().ok(r);
@@ -54,7 +54,7 @@ public class CategoryController {
 
     //根据type查询分类
     @GetMapping("/category/list")
-    @Operation(summary = "根据类型查询分类" , description = "根据分类的类型查询所有匹配的分类")
+    @Operation(summary = "查询" , description = "根据分类的类型查询所有匹配的分类")
     R selectCategoryByType(@RequestParam("type") Integer type){
         List<CategoryBody> r = categoryImpl.selectCategoryByType(type);
         return new R().ok(r);
@@ -62,8 +62,8 @@ public class CategoryController {
 
     //根据id删除
     @DeleteMapping("/category")
-    @Operation(summary = "根据id删除" , description = "根据id删除分类")
-    R deleteCategoryById(@RequestParam("id") Integer id) throws NoSuchMethodException {
+    @Operation(summary = "删除" , description = "根据id删除分类")
+    R deleteCategoryById(@RequestParam("id") Integer id){
         Integer r = categoryImpl.deleteCategoryById(id);
         return new R().ok(r);
     }

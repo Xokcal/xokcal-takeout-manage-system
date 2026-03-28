@@ -62,30 +62,34 @@ public class EmployeeImpl implements EmployeeService {
 
     //分页查询员工
     @Override
-    public EmployeePageResonseBody selectEmployeePageMain(String name, Integer page, Integer pageSize) {
-        if (!CheckIsValidUtil.isValid(page) || !CheckIsValidUtil.isValid(pageSize)) {
+    public EmployeePageResonseBody selectEmployeePageMain(EmployeePageRequestBody employeePageRequestBody) {
+        if (!CheckIsValidUtil.isValid(employeePageRequestBody)) {
             log.warn(EmployeeConstant.SELECT_PAGE_PARAM_ERROR);
             throw new BusinessException(EmployeeConstant.SELECT_PAGE_PARAM_ERROR
                     , EmployeeConstant.CODE_FRONT);
         }
-        if (employeeRedis.redisEmployeeIsExists(name , page , pageSize)){
-            return (EmployeePageResonseBody) employeeRedis.getRedisEmployeePage(name, page, pageSize);
+        if (employeeRedis.redisEmployeeIsExists(employeePageRequestBody)){
+            return (EmployeePageResonseBody) employeeRedis
+                    .getRedisEmployeePage(employeePageRequestBody);
         }
-        return getEmployeePageResonseBody(name, page, pageSize);
+        return getEmployeePageResonseBody(employeePageRequestBody);
     }
 
     //分页查询：没用缓存情况
-    private EmployeePageResonseBody getEmployeePageResonseBody(String name, Integer page, Integer pageSize) {
-        Integer start = EmployeeConstant.startPage(page, pageSize);
-        List<EmployeeBody> employeeBodies = employeeMapper.selectEmployeePage(name, start, pageSize);
+    private EmployeePageResonseBody getEmployeePageResonseBody
+    (EmployeePageRequestBody employeePageRequestBody) {
+        Integer start = EmployeeConstant.startPage(employeePageRequestBody.getPage()
+                , employeePageRequestBody.getPageSize());
+        List<EmployeeBody> employeeBodies = employeeMapper.selectEmployeePage(start , employeePageRequestBody);
         if (!CheckIsValidUtil.isValid(employeeBodies)) {
             log.warn(EmployeeConstant.SELECT_PAGE_RESULT_ERROR);
             throw new BusinessException(EmployeeConstant.SELECT_PAGE_RESULT_ERROR
                     , EmployeeConstant.CODE_BEHIND);
         }
-        EmployeePageResonseBody employeePageResonseBody = new EmployeePageResonseBody(selectTotal(), employeeBodies);
+        EmployeePageResonseBody employeePageResonseBody =
+                new EmployeePageResonseBody(selectTotal(), employeeBodies);
         employeeRedis.putRedisEmployeePage(employeePageResonseBody
-                , name, page, pageSize, 10);
+                ,employeePageRequestBody, 10);
         return employeePageResonseBody;
     }
 
@@ -135,8 +139,7 @@ public class EmployeeImpl implements EmployeeService {
             throw new BusinessException(EmployeeConstant.UPDATE_PASSWORD_MATCH_ERROR
                     , EmployeeConstant.CODE_FRONT);
         }
-        Integer row = employeeMapper.updatePassword(updatePasswordRquestBody.getNewPassword(), id);
-        return row;
+        return employeeMapper.updatePassword(updatePasswordRquestBody.getNewPassword(), id);
     }
 
     //修改员工状态
@@ -187,3 +190,4 @@ public class EmployeeImpl implements EmployeeService {
 
 
 }
+

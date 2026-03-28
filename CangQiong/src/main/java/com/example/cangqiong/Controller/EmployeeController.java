@@ -38,9 +38,8 @@ public class EmployeeController {
     //分页查询员工信息
     @GetMapping("/employee/page")
     @Operation(summary = "分页查询" , description = "分页查询员工信息")
-    R selectEmployeePage(@RequestParam(value = "name" , required = false) String name
-            , @RequestParam("page") Integer page , @RequestParam("pageSize") Integer pageSize){
-        EmployeePageResonseBody r = employee.selectEmployeePageMain(name, page, pageSize);
+    R selectEmployeePage(EmployeePageRequestBody employeePageRequestBody){
+        EmployeePageResonseBody r = employee.selectEmployeePageMain(employeePageRequestBody);
         return new R().ok(r);
     }
 
