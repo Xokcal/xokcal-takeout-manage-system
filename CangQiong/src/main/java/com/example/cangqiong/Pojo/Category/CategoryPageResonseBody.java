@@ -2,10 +2,11 @@ package com.example.cangqiong.Pojo.Category;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class CategoryPageResonseBody {
+public class CategoryPageResonseBody implements Serializable {
     private long total;
     private List<CategoryBody> records;
 

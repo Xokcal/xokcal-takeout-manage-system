@@ -36,11 +36,11 @@ public interface EmployeeMapper {
 
     //修改密码
     @Update("update employee set password = #{password} where id = #{id}")
-    Integer updatePassword(@Param("password") String password , @Param("id") Integer id);
+    Integer updatePassword(@Param("password") String password , @Param("id") Long id);
 
     //得到原始密码
     @Select("select password from employee where id = #{id}")
-    String selectOldPassword(Integer id);
+    String selectOldPassword(Long id);
 
     //更改员工状态
     @Update("update employee set status = #{status} where id = #{id}")

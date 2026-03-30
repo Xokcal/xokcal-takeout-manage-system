@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/admin")
-public class OrderController {
+public class  OrderController {
 
     @Autowired
     private OrderImpl orderImpl;

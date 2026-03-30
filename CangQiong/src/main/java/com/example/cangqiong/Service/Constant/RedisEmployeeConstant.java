@@ -1,6 +1,6 @@
-package com.example.cangqiong.Service.RedisConstant;
+package com.example.cangqiong.Service.Constant;
 
-public class EmployeeRedisConstant {
+public class RedisEmployeeConstant {
     public static Integer startPage(Integer page , Integer pageSize){
         return (page - 1) * pageSize;
     }

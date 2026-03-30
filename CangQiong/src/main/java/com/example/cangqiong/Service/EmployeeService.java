@@ -8,6 +8,6 @@ public interface EmployeeService {
     public EmployeePageResonseBody selectEmployeePageMain(EmployeePageRequestBody employeePageRequestBody);
     public EmployeeBody selectEmployeeByIdMain(long id);
     public Integer updateEmployeeMain(AddEmployeeRequstBody addEmployeeRequstBody);
-    public Integer updatePasswordMain(Integer id , UpdatePasswordRquestBody updatePasswordRquestBody);
+    public Integer updatePasswordMain(Long id, UpdatePasswordRquestBody updatePasswordRquestBody);
     public Integer updateEmplloyeeStatusMain(Integer status , Integer id);
 }

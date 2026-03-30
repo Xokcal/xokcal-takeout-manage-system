@@ -1,7 +1,9 @@
 package com.example.cangqiong.Controller;
 
 import com.example.cangqiong.Common.Annotation.Operation;
+import com.example.cangqiong.Common.CheckIsValid.CheckIsValidUtil;
 import com.example.cangqiong.Common.Jwt.JwtUtil;
+import com.example.cangqiong.Common.ThreadLocal.UserTokenStore;
 import com.example.cangqiong.Pojo.*;
 import com.example.cangqiong.Service.Implement.EmployeeImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +18,7 @@ public class EmployeeController {
     @Autowired
     private EmployeeImpl employee;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private static UserTokenStore userTokenStore;
 
     //员工登录
     @PostMapping("/employee/login")
@@ -62,10 +63,9 @@ public class EmployeeController {
     //修改密码
     @PutMapping("/employee/editPassword")
     @Operation(summary = "修改" , description = "修改密码")
-    R updatePassword(@RequestHeader("token") String token ,
-                     @RequestBody UpdatePasswordRquestBody updatePasswordRquestBody){
-        Integer tokenId = jwtUtil.getTokenId(token);
-        Integer row = employee.updatePasswordMain(tokenId,updatePasswordRquestBody);
+    R updatePassword(@RequestBody UpdatePasswordRquestBody updatePasswordRquestBody){
+        Long id = userTokenStore.getUserId();
+        Integer row = employee.updatePasswordMain(id,updatePasswordRquestBody);
         return new R().ok(row);
     }
 

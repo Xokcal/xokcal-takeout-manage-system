@@ -127,7 +127,7 @@ public class EmployeeImpl implements EmployeeService {
     //修改密码
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Integer updatePasswordMain(Integer id, UpdatePasswordRquestBody updatePasswordRquestBody) {
+    public Integer updatePasswordMain(Long id, UpdatePasswordRquestBody updatePasswordRquestBody) {
         if (!CheckIsValidUtil.isValid(updatePasswordRquestBody)
                 || !CheckIsValidUtil.isValid(id)) {
             log.warn(EmployeeConstant.UPDATE_PASSWORD_PARAM_ERROR);
@@ -157,8 +157,12 @@ public class EmployeeImpl implements EmployeeService {
     }
 
     //得到原始密码
-    private String selectOldPasswordMain(Integer id) {
-        selectOldPasswordMainValidParam(id);
+    private String selectOldPasswordMain(Long id) {
+        if (!CheckIsValidUtil.isValid(id)) {
+            log.warn(EmployeeConstant.QUERY_OLD_PASSWORD_PARAM_ERROR);
+            throw new BusinessException(EmployeeConstant.QUERY_OLD_PASSWORD_PARAM_ERROR
+                    , EmployeeConstant.CODE_FRONT);
+        }
         String password = employeeMapper.selectOldPassword(id);
         if (!CheckIsValidUtil.isValid(password)) {
             log.warn(EmployeeConstant.QUERY_OLD_PASSWORD_RESULT_ERROR);
@@ -166,15 +170,6 @@ public class EmployeeImpl implements EmployeeService {
                     , EmployeeConstant.CODE_BEHIND);
         }
         return password;
-    }
-
-    //参数校验
-    private static void selectOldPasswordMainValidParam(Integer id) {
-        if (!CheckIsValidUtil.isValid(id)) {
-            log.warn(EmployeeConstant.QUERY_OLD_PASSWORD_PARAM_ERROR);
-            throw new BusinessException(EmployeeConstant.QUERY_OLD_PASSWORD_PARAM_ERROR
-                    , EmployeeConstant.CODE_FRONT);
-        }
     }
 
     //查询总数

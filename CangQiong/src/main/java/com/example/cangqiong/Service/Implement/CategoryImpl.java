@@ -6,6 +6,7 @@ import com.example.cangqiong.Mapper.CategoryMapper;
 import com.example.cangqiong.Pojo.Category.*;
 import com.example.cangqiong.Service.CategoryService;
 import com.example.cangqiong.Service.Constant.CategoryConstant;
+import com.example.cangqiong.Service.Redis.CategoryRedis;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ public class CategoryImpl implements CategoryService {
     @Autowired
     private CategoryMapper categoryMapper;
 
+    @Autowired
+    private CategoryRedis categoryRedis;
+
     //分类分页查询
     @Override
     public CategoryPageResonseBody pageCategory(CategoryPageRequestBody categoryPageRequestBody) {
@@ -28,15 +32,27 @@ public class CategoryImpl implements CategoryService {
             throw new BusinessException(CategoryConstant.CATEGORY_PAGE_PARAM_ERROR
                     , CategoryConstant.CODE_FRONT);
         }
+        if (categoryRedis.categoryPageIsExist(categoryPageRequestBody)){
+            return (CategoryPageResonseBody) categoryRedis
+                    .getCategoryPageFromRedis(categoryPageRequestBody);
+        }
+        return getCategoryPageResonseBody(categoryPageRequestBody);
+    }
+
+    //分类分页查询（如果redis里面没有数据，那么就查数据库）
+    private CategoryPageResonseBody getCategoryPageResonseBody
+            (CategoryPageRequestBody categoryPageRequestBody) {
         Integer start = CategoryConstant.startPage(categoryPageRequestBody.getPage()
                 , categoryPageRequestBody.getPageSize());
-        List<CategoryBody> r = categoryMapper.queryCategoryPage(categoryPageRequestBody , start);
+        List<CategoryBody> r = categoryMapper.queryCategoryPage(categoryPageRequestBody, start);
         if (!CheckIsValidUtil.isValid(r)) {
             log.warn(CategoryConstant.CATEGORY_PAGE_RESULT_ERROR);
             throw new BusinessException(CategoryConstant.CATEGORY_PAGE_RESULT_ERROR
                     , CategoryConstant.CODE_BEHIND);
         }
-        return new CategoryPageResonseBody(categoryTotal(), r);
+        CategoryPageResonseBody rEnd = new CategoryPageResonseBody(categoryTotal(), r);
+        categoryRedis.putCategoryPageToRedis(rEnd,categoryPageRequestBody,10);
+        return rEnd;
     }
 
     //新增分类
@@ -48,6 +64,7 @@ public class CategoryImpl implements CategoryService {
             throw new BusinessException(CategoryConstant.ADD_CATEGORY_PARAM_ERROR
                     , CategoryConstant.CODE_FRONT);
         }
+        categoryRedis.deleteAllRedisCategoryPage();
         Integer row = categoryMapper.addNewCategory(addCategoryBody);
         return row;
     }
@@ -61,6 +78,7 @@ public class CategoryImpl implements CategoryService {
             throw new BusinessException(CategoryConstant.UPDATE_CATEGORY_PARAM_ERROR
                     , CategoryConstant.CODE_FRONT);
         }
+        categoryRedis.deleteAllRedisCategoryPage();
         Integer row = categoryMapper.updateCategory(updateCategoryBody);
         return row;
     }
@@ -74,6 +92,7 @@ public class CategoryImpl implements CategoryService {
             throw new BusinessException(CategoryConstant.UPDATE_CATEGORY_STATUS_PARAM_ERROR
                     , CategoryConstant.CODE_FRONT);
         }
+        categoryRedis.deleteAllRedisCategoryPage();
         Integer row = categoryMapper.updateCategoryStatus(status, id);
         return row;
     }
@@ -104,6 +123,7 @@ public class CategoryImpl implements CategoryService {
             throw new BusinessException(CategoryConstant.DELETE_CATEGORY_PARAM_ERROR
                     , CategoryConstant.CODE_FRONT);
         }
+        categoryRedis.deleteAllRedisCategoryPage();
         Integer row = categoryMapper.deleteCategoryById(id);
         return row;
     }

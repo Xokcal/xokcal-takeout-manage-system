@@ -1,4 +1,5 @@
 spring:
+  redis:
   datasource:
     password:
     username:

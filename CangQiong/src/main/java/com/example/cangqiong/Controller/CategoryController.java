@@ -17,9 +17,6 @@ public class CategoryController {
     @Autowired
     private CategoryImpl categoryImpl;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
     //分类分页查询
     @GetMapping("/category/page")
     @Operation(summary = "分页查询" , description = "获取分类的分页查询")

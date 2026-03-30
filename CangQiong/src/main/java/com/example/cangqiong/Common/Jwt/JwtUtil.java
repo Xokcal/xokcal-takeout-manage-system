@@ -84,18 +84,19 @@ public class JwtUtil {
     }
 
     //得到id
-    public Integer getTokenId(String token){
+    public Long getTokenId(String token){
         if (!CheckIsValidUtil.isValid(token)){
             log.warn(JwtConstant.JWT_GET_ID_PARAM_ERROR);
             throw new BusinessException(JwtConstant.JWT_GET_ID_PARAM_ERROR , 400);
         }
         Claims claims = parseToken(token);
         Integer id = (Integer) claims.get("id");
-        if (!CheckIsValidUtil.isValid(id)){
+        Long idL = Long.valueOf(String.valueOf(id));
+        if (!CheckIsValidUtil.isValid(idL)){
             log.warn(JwtConstant.JWT_GET_ID_RESULT_ERROR);
             throw new BusinessException(JwtConstant.JWT_GET_ID_RESULT_ERROR , 500);
         }
-        return id;
+        return idL;
     }
 
     public JwtUtil(){}

@@ -3,10 +3,11 @@ package com.example.cangqiong.Pojo.Category;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-public class CategoryBody {
+public class CategoryBody implements Serializable {
     private Integer id;
     private Integer type = 0;
     private String name = "";
